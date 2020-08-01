@@ -31,5 +31,5 @@ Open `server.lua` and `client.lua` and change as you like.
 
 ## Credits
 
-* Original [Stockade Heist](https://github.com/Eboraci/vrp_carroforte) by [utkuali](https://github.com/Eboraci)
+* Original [Stockade Heist](https://github.com/Eboraci/vrp_carroforte) by [Eboraci](https://github.com/Eboraci)
 * Implementations, new functions and creation - '𝗥𝗜𝗦𝗧𝗨𝗞𝗜 気 グ 雲# 0001
