@@ -13,7 +13,7 @@ https://streamable.com/q2xhuc
 
 ## Dependencies
 * VRPEX based on creative: [get here](https://github.com/contatosummerz/vrpex) or similar.
-* mhacking script.
+* `mhacking` script: [get here](https://github.com/ristukin/mhacking) or any version of this script.
 
 ## Installation
 
