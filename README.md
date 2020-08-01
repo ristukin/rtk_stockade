@@ -1,6 +1,6 @@
 ![](stockadeheist.png)
 
-# rtk_fleeca
+# rtk_stockade
 Stockade heist with c4 plantation (I don't know what to write anymore) <br>
 We have a [Discord](https://discord.gg/V9MT4zr) server to discuss, or if you need help!  
 [![Discord](https://img.shields.io/discord/736977037591576636?color=blueviolet&label=Discord)](https://discord.gg/V9MT4zr)
