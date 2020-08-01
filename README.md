@@ -6,7 +6,7 @@ We have a [Discord](https://discord.gg/V9MT4zr) server to discuss, or if you nee
 [![Discord](https://img.shields.io/discord/736977037591576636?color=blueviolet&label=Discord)](https://discord.gg/V9MT4zr)
 
 ## About
-Stockade heist with, mini hacking and c4 plantation.
+Stockade heist with mini hacking and c4 plantation.
 
 ## Preview
 https://streamable.com/q2xhuc
