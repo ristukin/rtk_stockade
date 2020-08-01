@@ -6,7 +6,7 @@ We have a [Discord](https://discord.gg/V9MT4zr) server to discuss, or if you nee
 [![Discord](https://img.shields.io/discord/736977037591576636?color=blueviolet&label=Discord)](https://discord.gg/V9MT4zr)
 
 ## About
-Fleeca bank robbery script, with mini game, synced money props and police notify.
+Stockade heist with, mini hacking and c4 plantation.
 
 ## Preview
 https://streamable.com/q2xhuc
@@ -31,5 +31,5 @@ Open `server.lua` and `client.lua` and change as you like.
 
 ## Credits
 
-* Original [Stockade Heist](https://github.com/Eboraci/vrp_carroforte) by [Eboraci](https://github.com/Eboraci)
+* Original [vrp_carroforte](https://github.com/Eboraci/vrp_carroforte) by [Eboraci](https://github.com/Eboraci)
 * Implementations, new functions and creation - '𝗥𝗜𝗦𝗧𝗨𝗞𝗜 気 グ 雲# 0001
