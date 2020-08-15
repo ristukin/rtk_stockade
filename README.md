@@ -9,7 +9,7 @@ We have a [Discord](https://discord.gg/V9MT4zr) server to discuss, or if you nee
 Stockade heist with mini hacking and c4 plantation.
 
 ## Preview
-https://streamable.com/tyhayw
+https://streamable.com/wirdge
 
 ## Dependencies
 * VRPEX based on creative: [get here](https://github.com/contatosummerz/vrpex) or similar.
