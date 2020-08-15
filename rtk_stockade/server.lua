@@ -116,3 +116,17 @@ function rtk.markOcorrency(x,y,z)
 		end
 	end
 end
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- GIVE MONEY
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+function rtk.giveMoney()
+	local source = source
+	local user_id = vRP.getUserId(source)
+	if user_id then
+		random = math.random(2000,4500)
+		vRP.giveInventoryItem(user_id,"dinheiro-sujo",parseInt(random))
+		TriggerClientEvent("Notify",source,"sucesso","Você roubou <b>"..random.."</b> de dinheiro sujo.")
+	end
+end

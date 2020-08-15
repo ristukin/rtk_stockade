@@ -25,6 +25,14 @@ local pveh02 = nil
 local plantando = false
 local hackeado = false
 local explodiu = false
+local bagMoney = nil
+local bagMoney2 = nil
+local bagMoney3 = nil
+local bagMoney4 = nil
+local bagMoney5 = nil
+local bagMoney6 = nil
+local final = false
+local createBag = false
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LOCAL DE INICIO DO HACKING
@@ -130,7 +138,7 @@ function rtk.spawnStockade(x,y,z,x2,y2,z2,h)
 		Citizen.Wait(10)
 	end
 
-	
+	SetModelAsNoLongerNeeded(vhash)
 	SetModelAsNoLongerNeeded(phash)
 	if HasModelLoaded(vhash) then
 		nveh = CreateVehicle(vhash,x,y,z+0.5,h,true,false)
@@ -169,7 +177,7 @@ end
 
 function setPedPropertys(npc,weapon)
 	SetPedShootRate(npc,850)
-	SetPedSuffersCriticalHits(npc,0) -- Altere para 1 caso queira que o NPC morra com apenas um tiro na cabeça.
+	SetPedSuffersCriticalHits(npc,1) -- Altere para 1 caso queira que o NPC morra com apenas um tiro na cabeça.
 	SetPedAlertness(npc,100)
 	AddArmourToPed(npc,100)
 	SetPedAccuracy(npc,100)
@@ -224,9 +232,9 @@ Citizen.CreateThread(function()
 					SetVehicleDoorShut(nveh,2,true)
 					SetVehicleDoorShut(nveh,3,true)
 				end
-				if dst <= 5 then
+				if dst <= 10 then
 					idle = 4
-					if dst <= 7 and GetClosestVehicle(x,y,z, 4, 1747439474, 16384) and hackeado and not plantando then
+					if dst <= 6 and GetClosestVehicle(x,y,z, 4, 1747439474, 16384) and hackeado and not plantando then
 						drawTxt("PRESSIONE  ~r~E~w~  PARA PLANTAR A C4",4,0.5,0.87,0.50,255,255,255,180)
 						if IsControlJustPressed(0,38) then
 							plantando = true
@@ -288,19 +296,134 @@ Citizen.CreateThread(function()
 							StopParticleFxLooped(effect, 0)
 							StopSound(beepSound)
 							ReleaseSoundId(beepSound)
-							vSERVER.dropSystem(x2,y2,z2)
+							--vSERVER.dropSystem(x2,y2,z2)
 							RemoveBlip(blip)
 							pveh01 = nil
 							pveh02 = nil
 							pveh03 = nil
 							pveh04 = nil
 							plantando = false
-							hackeado = false	
+							hackeado = false
+							createBag = true	
 						end)
 					end
 				end
 			end
 		end
+		Citizen.Wait(idle)
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		idle = 500
+		if createBag then
+			local idle = 4
+			bagMoney_hash = GetHashKey('prop_money_bag_01')
+			loadModel(bagMoney_hash)
+			Wait(100)
+			quantidade = 6
+			local putIN = GetOffsetFromEntityInWorldCoords(nveh,0.0,0.0,-5.0)
+
+			bagMoney = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney,nveh,0.0,-0.45,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			DetachEntity(bagMoney, false, false)
+
+			bagMoney2 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney2,nveh,0.0,0.0,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			DetachEntity(bagMoney2, false, false)
+
+			bagMoney3 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney3,nveh,0.0,0.45,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			DetachEntity(bagMoney3, false, false)
+
+			bagMoney4 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney4,nveh,0.0,-0.45,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			DetachEntity(bagMoney4, false, false)
+
+			bagMoney5 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney5,nveh,0.0,0.0,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			DetachEntity(bagMoney5, false, false)
+
+			bagMoney6 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney6,nveh,0.0,0.45,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			DetachEntity(bagMoney6, false, false)
+
+			Wait(100)
+			createBag = false
+			final = true
+		end
+		local ped = PlayerPedId()
+		local myCoords = GetEntityCoords(PlayerPedId())
+		local nmbag = GetClosestObjectOfType(myCoords.x, myCoords.y, myCoords.z, 1.25, GetHashKey('prop_money_bag_01'), false, false)
+		local mbagCoords = GetEntityCoords(nmbag)
+		local distance = GetDistanceBetweenCoords(myCoords.x, myCoords.y, myCoords.z, mbagCoords.x,mbagCoords.y,mbagCoords.z, true)
+			
+		if distance <= 4 then
+			idle = 4
+		end
+
+		if distance <= 1.7 and final then
+				DrawText3Ds(mbagCoords.x,mbagCoords.y,mbagCoords.z+0.95,"~b~[E] ~w~PEGAR")
+				if IsControlJustPressed(0,38) then
+					if quantidade == 6 then
+						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
+						Wait(500)
+						vSERVER.giveMoney()
+						DetachEntity(bagMoney,false,false)
+						FreezeEntityPosition(bagMoney,false)
+						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney))
+						bagMoney = nil
+						quantidade = 5
+					elseif quantidade == 5 then
+						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
+						Wait(500)
+						vSERVER.giveMoney()
+						DetachEntity(bagMoney2,false,false)
+						FreezeEntityPosition(bagMoney2,false)
+						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney2))
+						bagMoney2 = nil
+						quantidade = 4
+					elseif quantidade == 4 then
+						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
+						Wait(500)
+						vSERVER.giveMoney()
+						DetachEntity(bagMoney3,false,false)
+						FreezeEntityPosition(bagMoney3,false)
+						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney3))
+						bagMoney3 = nil
+						quantidade = 3
+					elseif quantidade == 3 then
+						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
+						Wait(500)
+						vSERVER.giveMoney()
+						DetachEntity(bagMoney4,false,false)
+						FreezeEntityPosition(bagMoney4,false)
+						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney4))
+						bagMoney4 = nil
+						quantidade = 2
+					elseif quantidade == 2 then
+						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
+						Wait(500)
+						vSERVER.giveMoney()
+						DetachEntity(bagMoney5,false,false)
+						FreezeEntityPosition(bagMoney5,false)
+						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney5))
+						bagMoney5 = nil
+						quantidade = 1
+					elseif quantidade == 1 then
+						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
+						Wait(500)
+						vSERVER.giveMoney()
+						DetachEntity(bagMoney6,false,false)
+						FreezeEntityPosition(bagMoney6,false)
+						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney6))
+						bagMoney6 = nil
+						quantidade = 0
+						final = false
+					end
+				end
+			end
 		Citizen.Wait(idle)
 	end
 end)
@@ -327,4 +450,20 @@ function loadModel(model)
         	Citizen.Wait(1)
         end
     end)
+end
+
+function DrawText3Ds(x,y,z,text)
+    local onScreen,_x,_y=World3dToScreen2d(x,y,z)
+    local px,py,pz=table.unpack(GetGameplayCamCoords())
+    
+    SetTextScale(0.34, 0.34)
+    SetTextFont(4)
+    SetTextProportional(1)
+    SetTextColour(255, 255, 255, 215)
+    SetTextEntry("STRING")
+    SetTextCentre(1)
+    AddTextComponentString(text)
+    DrawText(_x,_y)
+    local factor = (string.len(text)) / 370
+    DrawRect(_x,_y+0.0125, 0.001+ factor, 0.028, 0, 0, 0, 78)
 end
