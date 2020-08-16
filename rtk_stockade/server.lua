@@ -44,22 +44,20 @@ function rtk.checkTimers()
 	local source = source
 	local user_id = vRP.getUserId(source)
 	if user_id then
-		if vRP.getInventoryItemAmount(user_id,"laptop") >= 1 then
-			local policia = vRP.getUsersByPermission("policia.permissao")
-			if #policia < -1 then -- Informe o número de policiais necessários para startar o hacking.
-				TriggerClientEvent("Notify",source,"aviso","Número insuficiente de policiais no momento.",8000)
-				return false
-			elseif (os.time()-timers) <= 3600 then
-				TriggerClientEvent("Notify",source,"aviso","O sistema foi hackeado ou sofreu uma tentativa de hacking, aguarde <b>"..vRP.format(parseInt((3600-(os.time()-timers)))).." segundos</b> até que o mesmo retorne a funcionar.",8000)
-				return false
-			else
-				timers = os.time()
-				return true
-			end
-		else
-			TriggerClientEvent("Notify",source,"importante","Precisa de um <b>Pendrive</b> para hackear o sistema.",8000)
+		local policia = vRP.getUsersByPermission("policia.permissao")
+		if #policia < -1 then -- Informe o número de policiais necessários para startar o hacking.
+			TriggerClientEvent("Notify",source,"aviso","Número insuficiente de policiais no momento.",8000)
 			return false
+		elseif (os.time()-timers) <= 3600 then
+			TriggerClientEvent("Notify",source,"aviso","O sistema foi hackeado ou sofreu uma tentativa de hacking, aguarde <b>"..vRP.format(parseInt((3600-(os.time()-timers)))).." segundos</b> até que o mesmo retorne a funcionar.",8000)
+			return false
+		else
+			timers = os.time()
+			return true
 		end
+	else
+		TriggerClientEvent("Notify",source,"importante","Precisa de um <b>Pendrive</b> para hackear o sistema.",8000)
+		return false
 	end
 end
 
@@ -125,8 +123,23 @@ function rtk.giveMoney()
 	local source = source
 	local user_id = vRP.getUserId(source)
 	if user_id then
-		random = math.random(2000,4500)
+		random = math.random(10000,14500)
 		vRP.giveInventoryItem(user_id,"dinheiro-sujo",parseInt(random))
-		TriggerClientEvent("Notify",source,"sucesso","Você roubou <b>"..random.."</b> de dinheiro sujo.")
+		TriggerClientEvent("Notify",source,"sucesso","Você roubou <b>$"..vRP.format(parseInt(random)).."</b> de dinheiro sujo.")
 	end
+end
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHECK ITEM
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+function rtk.checkItem(item)
+    local source = source
+	local user_id = vRP.getUserId(source)
+    if vRP.tryGetInventoryItem(user_id,item,1) then
+        return true
+	else
+		TriggerClientEvent("Notify",source,"sucesso","Você precisa de "..vRP.itemNameList(item).." para realizar essa ação.")
+		return false
+    end
 end

@@ -75,12 +75,17 @@ Citizen.CreateThread(function()
 				if Vdist(CoordenadaX,CoordenadaY,CoordenadaZ,x,y,z) <= 1 then
 					drawTxt("PRESSIONE  ~r~E~w~  PARA HACKEAR",4,0.5,0.87,0.50,255,255,255,180)
 					if IsControlJustPressed(0,38) and vSERVER.checkTimers() and not hackeado then
-						TriggerEvent('cancelando',true)
-						vRP._playAnim(false,{{"missheist_jewel@hacking","hack_loop"}},true)
-						SetEntityHeading(ped,338.41)
-						TriggerEvent("mhacking:show")
-						TriggerEvent("mhacking:start",6,20,mycallback)
-						hackeado = true
+						if vSERVER.checkItem("laptop") then
+							TriggerEvent('cancelando',true)
+							vRP._playAnim(false,{{"missheist_jewel@hacking","hack_loop"}},true)
+							SetEntityHeading(ped,338.41)
+							TriggerEvent("mhacking:show")
+							TriggerEvent("mhacking:start",6,20,mycallback)
+							hackeado = true
+							createBag = true
+						else
+							vSERVER.resetTimer()
+						end
 					end
 				end
 			end
@@ -114,7 +119,7 @@ end
 function rtk.startStockade()
 	pos = math.random(#locs)
 	rtk.spawnStockade(locs[pos].x,locs[pos].y,locs[pos].z,locs[pos].x2,locs[pos].y2,locs[pos].z2,locs[pos].h)
-	TriggerEvent("Notify","aviso","Hackeado com sucesso, o carro forte está saindo do <b>Banco "..locs[pos].lugar.."</b>.",8000)
+	TriggerEvent("Notify","aviso","Hackeado com sucesso, o carro forte está saindo do <b>Banco "..locs[pos].lugar.."</b>.<br>O carro está marcado no seu <b>GPS</b>.",8000)
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -211,9 +216,46 @@ function setPedPropertys(npc,weapon)
 	SetPedConfigFlag(npc,118,false)
 	SetPedFleeAttributes(npc,128,true)
 	SetEntityLoadCollisionFlag(npc,true)
-
 	SetPedRelationshipGroupHash(npc,GetHashKey("security_guard"))
 end
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(4)
+		if createBag and DoesEntityExist(nveh) then
+			bagMoney_hash = GetHashKey('prop_money_bag_01')
+			loadModel(bagMoney_hash)
+			quantidade = 6
+			local putIN = GetOffsetFromEntityInWorldCoords(nveh,0.0,0.0,-5.0)
+	
+			bagMoney = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney,nveh,0.0,-0.45,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			SetEntityCollision(bagMoney, false, true)
+
+			bagMoney2 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney2,nveh,0.0,0.0,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			SetEntityCollision(bagMoney2, false, true)
+
+			bagMoney3 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney3,nveh,0.0,0.45,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			SetEntityCollision(bagMoney3, false, true)
+
+			bagMoney4 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney4,nveh,0.0,-0.45,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			SetEntityCollision(bagMoney4, false, true)
+
+			bagMoney5 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney5,nveh,0.0,0.0,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			SetEntityCollision(bagMoney5, false, true)
+
+			bagMoney6 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
+			AttachEntityToEntity(bagMoney6,nveh,0.0,0.45,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
+			SetEntityCollision(bagMoney6, false, true)
+
+			createBag = false
+		end
+	end
+end)
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- START
@@ -234,78 +276,97 @@ Citizen.CreateThread(function()
 				end
 				if dst <= 10 then
 					idle = 4
-					if dst <= 6 and GetClosestVehicle(x,y,z, 4, 1747439474, 16384) and hackeado and not plantando then
+					if dst <= 5.5 and GetClosestVehicle(x,y,z, 4, 1747439474, 16384) and hackeado and not plantando then
 						drawTxt("PRESSIONE  ~r~E~w~  PARA PLANTAR A C4",4,0.5,0.87,0.50,255,255,255,180)
 						if IsControlJustPressed(0,38) then
-							plantando = true
-							vSERVER.markOcorrency(x,y,z)
-							local c4_hash = GetHashKey("prop_bomb_01")
-							local bag_hash = GetHashKey('p_ld_heist_bag_s_pro_o')
-							loadModel(c4_hash)
-						Wait(10)
-							loadModel(bag_hash)
-						Wait(10)
-							local object = GetClosestObjectOfType(x,y,z,0.7,GetHashKey("door_dside_r"),0,0,0)
-							local a2,b2,c2 = table.unpack(GetEntityCoords(object))
-							c4 = CreateObject(c4_hash, (a2+b2+c2-20), true, true)
-							local bag = CreateObject(bag_hash, coords-20, true, false)
-							SetEntityAsMissionEntity(c4, true, true)
-							SetEntityAsMissionEntity(bag, true, true)
-							local boneIndexf1 = GetPedBoneIndex(PlayerPedId(), 28422)
-							local bagIndex1 = GetPedBoneIndex(PlayerPedId(), 57005)
-							vRP._playAnim(false,{{'anim@heists@ornate_bank@thermal_charge','thermal_charge'}},false)
-						Wait(500)
-							SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
-							AttachEntityToEntity(c4, PlayerPedId(), boneIndexf1, 0.0,0.0,-0.18,0.0,0.0,-90.0, 0, 1, 1, 0, 1, 1, 1)
-							AttachEntityToEntity(bag, PlayerPedId(), bagIndex1, 0.3, -0.25, -0.3, 300.0, 200.0, 300.0, true, true, false, true, 1, true)
-						Wait(1700)
-							DetachEntity(bag, 1, 1)
-							FreezeEntityPosition(bag, true)
-						Wait(2600)
-							FreezeEntityPosition(bag, false)
-							AttachEntityToEntity(bag, PlayerPedId(), bagIndex1, 0.3, -0.25, -0.3, 300.0, 200.0, 300.0, true, true, false, true, 1, true)
-						Wait(1100)
-							DetachEntity(c4, 1, 1)
-							FreezeEntityPosition(c4, true)
-						Wait(150)
-							DeleteEntity(bag)
-							SetPedComponentVariation(PlayerPedId(), 5, 40, 0, 0)
-							vRP._stopAnim(false)
-						Wait(100)
-							local a1,b1,c1 = table.unpack(GetEntityCoords(c4))
-							TriggerEvent("Notify","aviso","Você plantou a C4. <b>Afaste-se!</b><br>A C4 será acionada em <b>10 segundos</b>",8000)	
-							local particleDictionary = "scr_adversary"
-							local particleName = "scr_emp_prop_light"		
-							RequestNamedPtfxAsset(particleDictionary)
-								while not HasNamedPtfxAssetLoaded(particleDictionary) do
-								Citizen.Wait(0)
-								end					 
-							beepSound = GetSoundId()
+							if vSERVER.checkItem("thermal-charge") then
+								plantando = true
+								vSERVER.markOcorrency(x,y,z)
+								local c4_hash = GetHashKey("prop_bomb_01")
+								local bag_hash = GetHashKey('p_ld_heist_bag_s_pro_o')
+								loadModel(c4_hash)
+							Wait(10)
+								loadModel(bag_hash)
+							Wait(10)
+								local object = GetClosestObjectOfType(x,y,z,0.7,GetHashKey("door_dside_r"),0,0,0)
+								local a2,b2,c2 = table.unpack(GetEntityCoords(object))
+								c4 = CreateObject(c4_hash, (a2+b2+c2-20), true, true)
+								local bag = CreateObject(bag_hash, coords-20, true, false)
+								SetEntityAsMissionEntity(c4, true, true)
+								SetEntityAsMissionEntity(bag, true, true)
+								local boneIndexf1 = GetPedBoneIndex(PlayerPedId(), 28422)
+								local bagIndex1 = GetPedBoneIndex(PlayerPedId(), 57005)
+								vRP._playAnim(false,{{'anim@heists@ornate_bank@thermal_charge','thermal_charge'}},false)
+							Wait(500)
+								SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
+								AttachEntityToEntity(c4, PlayerPedId(), boneIndexf1, 0.0,0.0,-0.18,0.0,0.0,-90.0, 0, 1, 1, 0, 1, 1, 1)
+								AttachEntityToEntity(bag, PlayerPedId(), bagIndex1, 0.3, -0.25, -0.3, 300.0, 200.0, 300.0, true, true, false, true, 1, true)
+							Wait(1700)
+								DetachEntity(bag, 1, 1)
+								FreezeEntityPosition(bag, true)
+							Wait(2600)
+								FreezeEntityPosition(bag, false)
+								AttachEntityToEntity(bag, PlayerPedId(), bagIndex1, 0.3, -0.25, -0.3, 300.0, 200.0, 300.0, true, true, false, true, 1, true)
+							Wait(1100)
+								DetachEntity(c4, 1, 1)
+								FreezeEntityPosition(c4, true)
+							Wait(150)
+								DeleteEntity(bag)
+								SetPedComponentVariation(PlayerPedId(), 5, 40, 0, 0)
+								vRP._stopAnim(false)
+							Wait(100)
+								local a1,b1,c1 = table.unpack(GetEntityCoords(c4))
+								TriggerEvent("Notify","aviso","Você plantou a C4. <b>Afaste-se!</b><br>A C4 será acionada em <b>10 segundos</b>",8000)	
+								local particleDictionary = "scr_adversary"
+								local particleName = "scr_emp_prop_light"		
+								RequestNamedPtfxAsset(particleDictionary)
+									while not HasNamedPtfxAssetLoaded(particleDictionary) do
+									Citizen.Wait(0)
+									end					 
+								beepSound = GetSoundId()
 
-							PlaySoundFromEntity(beepSound, "Timer_10s", c4, "DLC_HALLOWEEN_FVJ_Sounds", 1, 0)
-									
-							SetPtfxAssetNextCall(particleDictionary)
-							effect = StartParticleFxLoopedOnEntity(particleName, c4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.20, 0, 0, 0)
-						SetTimeout(10000,function()
-							explodiu = true
-							FreezeEntityPosition(c4, false)
-							DeleteEntity(c4)
-							SetVehicleDoorOpen(nveh,2,0,0)
-							SetVehicleDoorOpen(nveh,3,0,0)
-							NetworkExplodeVehicle(nveh,1,1,1)
-							StopParticleFxLooped(effect, 0)
-							StopSound(beepSound)
-							ReleaseSoundId(beepSound)
-							--vSERVER.dropSystem(x2,y2,z2)
-							RemoveBlip(blip)
-							pveh01 = nil
-							pveh02 = nil
-							pveh03 = nil
-							pveh04 = nil
-							plantando = false
-							hackeado = false
-							createBag = true	
-						end)
+								PlaySoundFromEntity(beepSound, "Timer_10s", c4, "DLC_HALLOWEEN_FVJ_Sounds", 1, 0)
+										
+								SetPtfxAssetNextCall(particleDictionary)
+								effect = StartParticleFxLoopedOnEntity(particleName, c4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.20, 0, 0, 0)
+							SetTimeout(10000,function()
+								explodiu = true
+								FreezeEntityPosition(c4, false)
+								DeleteEntity(c4)
+								SetVehicleDoorOpen(nveh,2,0,0)
+								SetVehicleDoorOpen(nveh,3,0,0)
+								NetworkExplodeVehicle(nveh,1,1,1)
+								StopParticleFxLooped(effect, 0)
+								StopSound(beepSound)
+								ReleaseSoundId(beepSound)
+								DetachEntity(bagMoney, false, false)
+								SetEntityCollision(bagMoney, true, true)
+
+								DetachEntity(bagMoney2, false, false)
+								SetEntityCollision(bagMoney2, true, true)
+
+								DetachEntity(bagMoney3, false, false)
+								SetEntityCollision(bagMoney3, true, true)
+
+								DetachEntity(bagMoney4, false, false)
+								SetEntityCollision(bagMoney4, true, true)
+
+								DetachEntity(bagMoney5, false, false)
+								SetEntityCollision(bagMoney5, true, true)
+
+								DetachEntity(bagMoney6, false, false)
+								SetEntityCollision(bagMoney6, true, true)
+
+								RemoveBlip(blip)
+								pveh01 = nil
+								pveh02 = nil
+								pveh03 = nil
+								pveh04 = nil
+								plantando = false
+								hackeado = false
+								final = true
+							end)
+						end
 					end
 				end
 			end
@@ -317,42 +378,6 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		idle = 500
-		if createBag then
-			local idle = 4
-			bagMoney_hash = GetHashKey('prop_money_bag_01')
-			loadModel(bagMoney_hash)
-			Wait(100)
-			quantidade = 6
-			local putIN = GetOffsetFromEntityInWorldCoords(nveh,0.0,0.0,-5.0)
-
-			bagMoney = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
-			AttachEntityToEntity(bagMoney,nveh,0.0,-0.45,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
-			DetachEntity(bagMoney, false, false)
-
-			bagMoney2 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
-			AttachEntityToEntity(bagMoney2,nveh,0.0,0.0,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
-			DetachEntity(bagMoney2, false, false)
-
-			bagMoney3 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
-			AttachEntityToEntity(bagMoney3,nveh,0.0,0.45,-3.0,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
-			DetachEntity(bagMoney3, false, false)
-
-			bagMoney4 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
-			AttachEntityToEntity(bagMoney4,nveh,0.0,-0.45,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
-			DetachEntity(bagMoney4, false, false)
-
-			bagMoney5 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
-			AttachEntityToEntity(bagMoney5,nveh,0.0,0.0,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
-			DetachEntity(bagMoney5, false, false)
-
-			bagMoney6 = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
-			AttachEntityToEntity(bagMoney6,nveh,0.0,0.45,-2.9,0.48,0.0,0.0,0.0,false,false,true,false,2,true)
-			DetachEntity(bagMoney6, false, false)
-
-			Wait(100)
-			createBag = false
-			final = true
-		end
 		local ped = PlayerPedId()
 		local myCoords = GetEntityCoords(PlayerPedId())
 		local nmbag = GetClosestObjectOfType(myCoords.x, myCoords.y, myCoords.z, 1.25, GetHashKey('prop_money_bag_01'), false, false)
