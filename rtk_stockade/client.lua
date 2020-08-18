@@ -225,7 +225,7 @@ Citizen.CreateThread(function()
 		if createBag and DoesEntityExist(nveh) then
 			bagMoney_hash = GetHashKey('prop_money_bag_01')
 			loadModel(bagMoney_hash)
-			quantidade = 6
+
 			local putIN = GetOffsetFromEntityInWorldCoords(nveh,0.0,0.0,-5.0)
 	
 			bagMoney = CreateObject(GetHashKey("prop_money_bag_01"),putIN.x,putIN.y,putIN.z,true,true,true)
@@ -297,7 +297,7 @@ Citizen.CreateThread(function()
 								local boneIndexf1 = GetPedBoneIndex(PlayerPedId(), 28422)
 								local bagIndex1 = GetPedBoneIndex(PlayerPedId(), 57005)
 								vRP._playAnim(false,{{'anim@heists@ornate_bank@thermal_charge','thermal_charge'}},false)
-							Wait(500)
+							Citizen.Wait(500)
 								SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
 								AttachEntityToEntity(c4, PlayerPedId(), boneIndexf1, 0.0,0.0,-0.18,0.0,0.0,-90.0, 0, 1, 1, 0, 1, 1, 1)
 								AttachEntityToEntity(bag, PlayerPedId(), bagIndex1, 0.3, -0.25, -0.3, 300.0, 200.0, 300.0, true, true, false, true, 1, true)
@@ -311,7 +311,7 @@ Citizen.CreateThread(function()
 								DetachEntity(c4, 1, 1)
 								FreezeEntityPosition(c4, true)
 							Wait(150)
-								DeleteEntity(bag)
+								TriggerServerEvent("trydeleteobj",ObjToNet(bag))
 								SetPedComponentVariation(PlayerPedId(), 5, 40, 0, 0)
 								vRP._stopAnim(false)
 							Wait(100)
@@ -332,7 +332,7 @@ Citizen.CreateThread(function()
 							SetTimeout(10000,function()
 								explodiu = true
 								FreezeEntityPosition(c4, false)
-								DeleteEntity(c4)
+								TriggerServerEvent("trydeleteobj",ObjToNet(c4))
 								SetVehicleDoorOpen(nveh,2,0,0)
 								SetVehicleDoorOpen(nveh,3,0,0)
 								NetworkExplodeVehicle(nveh,1,1,1)
@@ -341,21 +341,27 @@ Citizen.CreateThread(function()
 								ReleaseSoundId(beepSound)
 								DetachEntity(bagMoney, false, false)
 								SetEntityCollision(bagMoney, true, true)
+								FreezeEntityPosition(bagMoney,false)
 
 								DetachEntity(bagMoney2, false, false)
 								SetEntityCollision(bagMoney2, true, true)
+								FreezeEntityPosition(bagMoney2,false)
 
 								DetachEntity(bagMoney3, false, false)
 								SetEntityCollision(bagMoney3, true, true)
+								FreezeEntityPosition(bagMoney3,false)
 
 								DetachEntity(bagMoney4, false, false)
 								SetEntityCollision(bagMoney4, true, true)
+								FreezeEntityPosition(bagMoney4,false)
 
 								DetachEntity(bagMoney5, false, false)
 								SetEntityCollision(bagMoney5, true, true)
+								FreezeEntityPosition(bagMoney5,false)
 
 								DetachEntity(bagMoney6, false, false)
 								SetEntityCollision(bagMoney6, true, true)
+								FreezeEntityPosition(bagMoney6,false)
 
 								RemoveBlip(blip)
 								pveh01 = nil
@@ -365,6 +371,7 @@ Citizen.CreateThread(function()
 								plantando = false
 								hackeado = false
 								final = true
+								quantidade = 6
 							end)
 						end
 					end
@@ -391,62 +398,67 @@ Citizen.CreateThread(function()
 		if distance <= 1.7 and final then
 				DrawText3Ds(mbagCoords.x,mbagCoords.y,mbagCoords.z+0.95,"~b~[E] ~w~PEGAR")
 				if IsControlJustPressed(0,38) then
+					final = false
 					if quantidade == 6 then
 						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
-						Wait(500)
+						Wait(1300)
 						vSERVER.giveMoney()
-						DetachEntity(bagMoney,false,false)
-						FreezeEntityPosition(bagMoney,false)
 						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney))
 						bagMoney = nil
 						quantidade = 5
-					elseif quantidade == 5 then
+						final = true
+					end
+
+					if quantidade == 5 then
 						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
-						Wait(500)
+						Wait(1300)
 						vSERVER.giveMoney()
-						DetachEntity(bagMoney2,false,false)
-						FreezeEntityPosition(bagMoney2,false)
 						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney2))
 						bagMoney2 = nil
 						quantidade = 4
-					elseif quantidade == 4 then
+						final = true
+					end
+
+					if quantidade == 4 then
 						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
-						Wait(500)
+						Wait(1300)
 						vSERVER.giveMoney()
-						DetachEntity(bagMoney3,false,false)
-						FreezeEntityPosition(bagMoney3,false)
 						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney3))
 						bagMoney3 = nil
 						quantidade = 3
-					elseif quantidade == 3 then
+						final = true
+					end
+
+					if quantidade == 3 then
 						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
-						Wait(500)
+						Wait(1300)
 						vSERVER.giveMoney()
-						DetachEntity(bagMoney4,false,false)
-						FreezeEntityPosition(bagMoney4,false)
 						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney4))
 						bagMoney4 = nil
 						quantidade = 2
-					elseif quantidade == 2 then
+						final = true
+					end
+
+					if quantidade == 2 then
 						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
-						Wait(500)
+						Wait(1300)
 						vSERVER.giveMoney()
-						DetachEntity(bagMoney5,false,false)
-						FreezeEntityPosition(bagMoney5,false)
 						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney5))
 						bagMoney5 = nil
 						quantidade = 1
-					elseif quantidade == 1 then
+						final = true
+					end
+
+					if quantidade == 1 then
 						vRP._playAnim(false,{{'pickup_object','pickup_low'}},false)
-						Wait(500)
+						Wait(2000)
 						vSERVER.giveMoney()
-						DetachEntity(bagMoney6,false,false)
-						FreezeEntityPosition(bagMoney6,false)
 						TriggerServerEvent("trydeleteobj",ObjToNet(bagMoney6))
 						bagMoney6 = nil
 						quantidade = 0
 						final = false
 					end
+
 				end
 			end
 		Citizen.Wait(idle)
